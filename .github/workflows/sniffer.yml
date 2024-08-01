@@ -1,0 +1,30 @@
+on:
+  workflow_dispatch:
+    
+jobs:
+  sniff:
+    name: Identify code smells through reactsniffer
+    runs-on: ubuntu_latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '21.x'
+
+    - name: Install reactsniffer
+      run: npm install -g reactsniffer
+
+    - name: Run react-sniffer
+      run: reactsniffer src
+
+    - name: Upload CSV files as artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: output-csv-files
+        path: |
+          components_smells.csv
+          files_smells.csv
