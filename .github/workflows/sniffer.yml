@@ -8,12 +8,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
-        node-version: '21.x'
+        node-version: latest
 
     - name: Install reactsniffer
       run: npm install -g reactsniffer
@@ -21,10 +21,10 @@ jobs:
     - name: Run react-sniffer
       run: reactsniffer src
 
-    - name: Upload CSV files as artifacts
-      uses: actions/upload-artifact@v3
+    - name: Upload smell files as artifacts
+      uses: actions/upload-artifact@v4
       with:
-        name: output-csv-files
+        name: smells
         path: |
           components_smells.csv
           files_smells.csv
