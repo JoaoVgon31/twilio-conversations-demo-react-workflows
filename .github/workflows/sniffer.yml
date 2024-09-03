@@ -58,7 +58,7 @@ jobs:
     - name: Run react-sniffer
       run: reactsniffer src
 
-    - name: Validate errors in entire CSV
+    - name: Validate components smells
       run: |
         thresholds_large_component="${{ github.event.inputs['thresholds.large-component'] }}"
         thresholds_too_many_props="${{ github.event.inputs['thresholds.too-many-props'] }}"
@@ -104,9 +104,9 @@ jobs:
           echo "Validation passed for errors. No errors exceed their thresholds in $file_path."
         }
     
-        check_csv_for_errors "output1.csv" error_thresholds
+        check_csv_for_errors "components_smells.csv" error_thresholds
 
-    - name: Validate line count in CSV (excluding header)
+    - name: Validate file smells
       run: |
         thresholds_large_file="${{ github.event.inputs['thresholds.large-file'] }}"
     
@@ -130,7 +130,7 @@ jobs:
           echo "Validation passed for line count in $file_path. Line count is within the threshold."
         }
     
-        check_csv_line_count_excluding_header "output2.csv" "$thresholds_large_file"
+        check_csv_line_count_excluding_header "files_smells.csv" "$thresholds_large_file"
     
     - name: Upload smell files as artifacts
       uses: actions/upload-artifact@v4
