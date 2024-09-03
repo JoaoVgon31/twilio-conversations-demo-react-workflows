@@ -79,13 +79,13 @@ jobs:
     
         declare -A error_thresholds=(
           ["Large Component"]=$thresholds_large_component
-          ["Too Many Props"]=$thresholds_too_many_props
-          ["Inheritance Instead of Composition"]=$thresholds_inheritance_instead_of_composition
-          ["Props in Initial State"]=$thresholds_props_in_initial_state
-          ["Direct Dom Manipulation"]=$thresholds_direct_dom_manipulation
+          ["Too many props"]=$thresholds_too_many_props
+          ["Inheritance instead of composition"]=$thresholds_inheritance_instead_of_composition
+          ["Props in initial state"]=$thresholds_props_in_initial_state
+          ["Direct DOM Manipulation"]=$thresholds_direct_dom_manipulation
           ["Force Update"]=$thresholds_force_update
-          ["JSX Outside Render Method"]=$thresholds_jsx_outside_render_method
-          ["Uncontrolled Components"]=$thresholds_uncontrolled_components
+          ["JSX outside the render method"]=$thresholds_jsx_outside_render_method
+          ["Uncontrolled component"]=$thresholds_uncontrolled_components
         )
     
         check_csv_for_errors() {
