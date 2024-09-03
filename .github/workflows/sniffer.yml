@@ -127,7 +127,7 @@ jobs:
             return
           fi
     
-          line_count=$(($(wc -l < "$file_path") - 1))
+          line_count=$(($(wc -l < "$file_path") - 3))
           echo "Found $line_count lines (excluding header) in $file_path with threshold $threshold."
     
           if [ "$line_count" -ge "$threshold" ]; then
