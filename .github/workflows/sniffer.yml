@@ -58,6 +58,14 @@ jobs:
     - name: Run react-sniffer
       run: reactsniffer src
 
+    - name: Upload smell files as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: smells
+        path: |
+          components_smells.csv
+          files_smells.csv
+
     - name: Validate components smells
       run: |
         thresholds_large_component="${{ github.event.inputs['thresholds.large-component'] }}"
@@ -131,11 +139,3 @@ jobs:
         }
     
         check_csv_line_count_excluding_header "files_smells.csv" "$thresholds_large_file"
-    
-    - name: Upload smell files as artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: smells
-        path: |
-          components_smells.csv
-          files_smells.csv
