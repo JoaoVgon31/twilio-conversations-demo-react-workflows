@@ -1,5 +1,5 @@
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       thresholds.large-component:
         description: 'Threshold for Large Component: too many props, attributes, and/or lines of code. (use -1 to ignore)'
