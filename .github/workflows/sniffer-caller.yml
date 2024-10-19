@@ -5,7 +5,7 @@ on:
 
 jobs:
   call-sniff:
-    uses: ./.github/workflows/sniffer-reusable.yml
+    uses: JoaoVgon/twilio-conversations-demo-react-workflows/.github/workflows/sniffer-reusable.yml
     with:
       thresholds.large-component: '-1'
       thresholds.too-many-props: '-1'
