@@ -22,3 +22,4 @@ jobs:
       run: |
         unusedDepChange=$(npx dep-scimitar runremote)
         echo "UnusedDepCommit=$unusedDepCommit" >> $GITHUB_ENV
+        echo "UnusedDepCommit: ${{ env.UnusedDepCommit }}"
