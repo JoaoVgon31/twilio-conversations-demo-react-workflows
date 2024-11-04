@@ -9,6 +9,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -26,4 +28,13 @@ jobs:
     - name: Print Env variable
       run: |
         echo "UnusedDepChange: ${{ env.UnusedDepChange }}"
+
+    - name: Check results of Dep-sCImitar
+      if:  ${{ env.UnusedDepChange != 1 }}
+      run: |
+        cd $GITHUB_WORKSPACE
+        echo "Current directory: $(pwd)"
+        echo "Contents of the directory: $(ls -a)"
+        git log -n 1 --format="%H"  
+        git log -n 1 --format="%P" 
 
