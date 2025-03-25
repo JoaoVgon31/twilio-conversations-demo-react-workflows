@@ -43,14 +43,14 @@ jobs:
         THRESHOLD_UNCONTROLLED_COMPONENTS: ${{ vars.THRESHOLD_UNCONTROLLED_COMPONENTS }}
       run: |
         declare -A error_thresholds=(
-          ["Large Component"]=${THRESHOLD_LARGE_COMPONENT:--1}
-          ["Too many props"]=${THRESHOLD_TOO_MANY_PROPS:--1}
-          ["Inheritance instead of composition"]=${THRESHOLD_INHERITANCE_INSTEAD_OF_COMPOSITION:--1}
-          ["Props in initial state"]=${THRESHOLD_PROPS_IN_INITIAL_STATE:--1}
-          ["Direct DOM Manipulation"]=${THRESHOLD_DIRECT_DOM_MANIPULATION:--1}
-          ["Force Update"]=${THRESHOLD_FORCE_UPDATE:--1}
-          ["JSX outside the render method"]=${THRESHOLD_JSX_OUTSIDE_RENDER_METHOD:--1}
-          ["Uncontrolled component"]=${THRESHOLD_UNCONTROLLED_COMPONENTS:--1}
+          ["Large Component"]="${THRESHOLD_LARGE_COMPONENT:--1}"
+          ["Too many props"]="${THRESHOLD_TOO_MANY_PROPS:--1}"
+          ["Inheritance instead of composition"]="${THRESHOLD_INHERITANCE_INSTEAD_OF_COMPOSITION:--1}"
+          ["Props in initial state"]="${THRESHOLD_PROPS_IN_INITIAL_STATE:--1}"
+          ["Direct DOM Manipulation"]="${THRESHOLD_DIRECT_DOM_MANIPULATION:--1}"
+          ["Force Update"]="${THRESHOLD_FORCE_UPDATE:--1}"
+          ["JSX outside the render method"]="${THRESHOLD_JSX_OUTSIDE_RENDER_METHOD:--1}"
+          ["Uncontrolled component"]="${THRESHOLD_UNCONTROLLED_COMPONENTS:--1}"
         )
     
         check_csv_for_errors() {
@@ -80,8 +80,10 @@ jobs:
         check_csv_for_errors "components_smells.csv" error_thresholds
 
     - name: Validate file smells
+      env:
+        THRESHOLD_LARGE_FILE: ${{ vars.THRESHOLD_LARGE_FILE }}
       run: |
-        thresholds_large_file="${{ github.event.inputs['thresholds.large-file'] }}"
+        thresholds_large_file="${THRESHOLD_LARGE_FILE:--1}"
     
         check_csv_line_count_excluding_header() {
           local file_path="$1"
