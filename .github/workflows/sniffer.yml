@@ -1,0 +1,106 @@
+on:
+  push:
+    branches:
+      - main
+    
+jobs:
+  sniff:
+    name: Identify code smells through reactsniffer
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: latest
+
+    - name: Install reactsniffer
+      run: npm install -g reactsniffer
+
+    - name: Run react-sniffer
+      run: reactsniffer src
+
+    - name: Upload smell files as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: smells
+        path: |
+          components_smells.csv
+          files_smells.csv
+
+    - name: Validate components smells
+      env:
+        THRESHOLD_LARGE_COMPONENT = ${{ vars.THRESHOLD_LARGE_COMPONENT }}
+        THRESHOLD_TOO_MANY_PROPS = ${{ vars.THRESHOLD_TOO_MANY_PROPS }}
+        THRESHOLD_INHERITANCE_INSTEAD_OF_COMPOSITION = ${{ vars.THRESHOLD_INHERITANCE_INSTEAD_OF_COMPOSITION }}
+        THRESHOLD_PROPS_IN_INITIAL_STATE = ${{ vars.THRESHOLD_PROPS_IN_INITIAL_STATE }}
+        THRESHOLD_DIRECT_DOM_MANIPULATION = ${{ vars.THRESHOLD_DIRECT_DOM_MANIPULATION }}
+        THRESHOLD_FORCE_UPDATE = ${{ vars.THRESHOLD_FORCE_UPDATE }}
+        THRESHOLD_JSX_OUTSIDE_RENDER_METHOD = ${{ vars.THRESHOLD_JSX_OUTSIDE_RENDER_METHOD }}
+        THRESHOLD_UNCONTROLLED_COMPONENTS = ${{ vars.THRESHOLD_UNCONTROLLED_COMPONENTS }}
+      run: |
+        declare -A error_thresholds=(
+          ["Large Component"]=${THRESHOLD_LARGE_COMPONENT:--1}
+          ["Too many props"]=${THRESHOLD_TOO_MANY_PROPS:--1}
+          ["Inheritance instead of composition"]=${THRESHOLD_INHERITANCE_INSTEAD_OF_COMPOSITION:--1}
+          ["Props in initial state"]=${THRESHOLD_PROPS_IN_INITIAL_STATE:--1}
+          ["Direct DOM Manipulation"]=${THRESHOLD_DIRECT_DOM_MANIPULATION:--1}
+          ["Force Update"]=${THRESHOLD_FORCE_UPDATE:--1}
+          ["JSX outside the render method"]=${THRESHOLD_JSX_OUTSIDE_RENDER_METHOD:--1}
+          ["Uncontrolled component"]=${THRESHOLD_UNCONTROLLED_COMPONENTS:--1}
+        )
+    
+        check_csv_for_errors() {
+          local file_path="$1"
+          local -n thresholds="$2"
+    
+          for error in "${!thresholds[@]}"; do
+            local threshold="${thresholds[$error]}"
+    
+            if [ "$threshold" -eq "-1" ]; then
+              echo "Skipping check for '$error' as its threshold is set to -1."
+              continue
+            fi
+    
+            error_count=$(grep -o "$error" "$file_path" | wc -l)
+            echo "Found '$error' $error_count times in $file_path with threshold $threshold."
+    
+            if [ "$error_count" -ge "$threshold" ]; then
+              echo "Error '$error' count ($error_count) exceeds its threshold ($threshold). Failing the build."
+              exit 1
+            fi
+          done
+    
+          echo "Validation passed for errors. No errors exceed their thresholds in $file_path."
+        }
+    
+        check_csv_for_errors "components_smells.csv" error_thresholds
+
+    - name: Validate file smells
+      run: |
+        thresholds_large_file="${{ github.event.inputs['thresholds.large-file'] }}"
+    
+        check_csv_line_count_excluding_header() {
+          local file_path="$1"
+          local threshold="$2"
+    
+          if [ "$threshold" -eq "-1" ]; then
+            echo "Skipping line count check for '$file_path' as the threshold is set to -1."
+            return
+          fi
+    
+          line_count=$(($(wc -l < "$file_path") - 3))
+          echo "Found $line_count lines (excluding header) in $file_path with threshold $threshold."
+    
+          if [ "$line_count" -ge "$threshold" ]; then
+            echo "Line count ($line_count) exceeds the threshold ($threshold). Failing the build."
+            exit 1
+          fi
+    
+          echo "Validation passed for line count in $file_path. Line count is within the threshold."
+        }
+    
+        check_csv_line_count_excluding_header "files_smells.csv" "$thresholds_large_file"
