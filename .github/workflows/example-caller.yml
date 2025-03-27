@@ -10,4 +10,4 @@ jobs:
 
     steps:
     - name: Detect React code smells
-      uses: JoaoVgon31/twilio-conversations-demo-react-workflows/.github/actions/reactsniffer
+      uses: JoaoVgon31/twilio-conversations-demo-react-workflows/.github/actions/reactsniffer@main
