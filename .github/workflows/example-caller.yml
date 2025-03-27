@@ -1,0 +1,13 @@
+on:
+    push:
+      branches:
+        - main
+
+jobs:
+    call-reusable:
+        name: Call reusable actions
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Detect React code smells
+          uses: JoaoVgon31/twilio-conversations-demo-react-workflows/.github/workflows/sniffer-reusable.yml@main
