@@ -9,5 +9,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: latest
+
+    - name: Install dummy npm package
+      run: npm install dummy-data
+      shell: bash
+
     - name: Detect React code smells
       uses: JoaoVgon31/twilio-conversations-demo-react-workflows/.github/actions/reactsniffer@main
