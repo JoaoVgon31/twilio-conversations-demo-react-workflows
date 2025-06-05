@@ -17,8 +17,8 @@ jobs:
       with:
         node-version: latest
 
-    - name: Install dep-scimitar and knip
-      run: npm install dep-scimitar knip
+    - name: Install dep-scimitar and depcheck
+      run: npm install dep-scimitar depcheck
 
     - name: Run dep-scimitar
       run: |
@@ -29,9 +29,9 @@ jobs:
       run: |
         echo "UnusedDepChange: ${{ env.UnusedDepChange }}"
 
-    - name: Run knip to display unused dependencies
+    - name: Run depcheck to display unused dependencies
       run: |
-        npx knip --dependencies
+        npx depcheck
 
     - name: Check results of Dep-sCImitar
       if:  ${{ env.UnusedDepChange != 1 }}
