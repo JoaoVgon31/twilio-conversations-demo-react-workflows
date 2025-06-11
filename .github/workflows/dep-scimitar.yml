@@ -30,8 +30,9 @@ jobs:
         echo "UnusedDepChange: ${{ env.UnusedDepChange }}"
 
     - name: Run depcheck to display unused dependencies
+      continue-on-error: true
       run: |
-        npx depcheck --skip-missing
+        npx depcheck --skip-missing || echo ""
 
     - name: Check results of Dep-sCImitar
       if:  ${{ env.UnusedDepChange != 1 }}
