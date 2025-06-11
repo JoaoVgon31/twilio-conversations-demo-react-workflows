@@ -32,7 +32,7 @@ jobs:
     - name: Run depcheck to display unused dependencies
       continue-on-error: true
       run: |
-        npx depcheck --skip-missing || echo ""
+        npx depcheck --skip-missing
 
     - name: Check results of Dep-sCImitar
       if:  ${{ env.UnusedDepChange != 1 }}
